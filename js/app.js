@@ -76,11 +76,13 @@ button.addEventListener("click", function() {
       for(block = 1; block <= inputArrayRowsColumns.length; block++){
         for(column = 1; column <= inputArrayRowsColumns[block-1][0]; column++){
           for(row = 1; row <= inputArrayRowsColumns[block-1][1]; row++){
-            if(block === 1 && column === 1) {
+            if(block === 1 && column === 1 && inputArrayRowsColumns[block-1][0]>1) {
               newSeat = new Seat(block, column, row, 2);
               result.push(newSeat);
             }
-            else if(block === inputArrayRowsColumns.length && column === inputArrayRowsColumns[block-1][0]){
+            else if(block === inputArrayRowsColumns.length
+              && column === inputArrayRowsColumns[block-1][0]
+              && inputArrayRowsColumns[block-1][0]>1){
               newSeat = new Seat(block, column, row, 2);
               result.push(newSeat);
             }
