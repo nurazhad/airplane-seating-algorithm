@@ -18,6 +18,17 @@ function transformInputStringToArray(string) {
   return array;
 }
 
+function clearFromDOM(element){
+  while (element.firstChild) {
+      element.removeChild(element.firstChild);
+  }
+}
+
+function addBackgroundImg() {
+  seats.style.background = 'url(\'img/img.png\') no-repeat center top';
+  seats.style.backgroundSize = 'contain';
+}
+
 function Seat (block, row, column, classSeat, passenger)
 {
   this.block = block;
@@ -35,6 +46,33 @@ function mySort(key) {
   }
 }
 
+function createTableResults (arrInput, arrResult) {
+  for(i=0; i<arrInput.length; i++){
+    table = document.createElement('table');
+    table.setAttribute('class', 'table'+(i+1));
+
+    for(j=0; j<arrInput[i][1]; j++) {
+      tr = document.createElement('tr');
+      tr.setAttribute('class', 'tr'+(j+1));
+      for(z=0; z<arrResult.length; z++) {
+        if(arrResult[z].block===i+1 && arrResult[z].column===j+1) {
+          td = document.createElement('td');
+          td.setAttribute('class', 'class'+arrResult[z].classSeat);
+          if(isNaN(arrResult[z].passenger)===false) {
+            td.innerText=arrResult[z].passenger;
+          }
+          else{
+            td.innerText="";
+          }
+          tr.appendChild(td);
+        }
+      }
+      table.appendChild(tr);
+    }
+    seats.appendChild(table);
+  }
+}
+
 button.addEventListener("click", function() {
       let queue = document.getElementById('queue').value;
       let stringRowsColumns = document.getElementById("rowsColumns").value;
@@ -43,13 +81,10 @@ button.addEventListener("click", function() {
 
 
 // removing old result
-      while (seats.firstChild) {
-          seats.removeChild(seats.firstChild);
-      }
+      clearFromDOM(seats);
 
 // image airplane in div with results
-      seats.style.background = 'url(\'img/img.png\') no-repeat center top';
-      seats.style.backgroundSize = 'contain';
+      addBackgroundImg();
 
 // transform input string to array
       let inputArrayRowsColumns = transformInputStringToArray(stringRowsColumns);
@@ -119,28 +154,6 @@ button.addEventListener("click", function() {
       result.sort(mySort('column'));
       result.sort(mySort('block'));
 
-      for(i=0; i<inputArrayRowsColumns.length; i++){
-        table = document.createElement('table');
-        table.setAttribute('class', 'table'+(i+1));
+      createTableResults(inputArrayRowsColumns, result)
 
-        for(j=0; j<inputArrayRowsColumns[i][1]; j++) {
-          tr = document.createElement('tr');
-          tr.setAttribute('class', 'tr'+(j+1));
-          for(z=0; z<result.length; z++) {
-            if(result[z].block===i+1 && result[z].column===j+1) {
-              td = document.createElement('td');
-              td.setAttribute('class', 'class'+result[z].classSeat);
-              if(isNaN(result[z].passenger)===false) {
-                td.innerText=result[z].passenger;
-              }
-              else{
-                td.innerText="";
-              }
-              tr.appendChild(td);
-            }
-          }
-          table.appendChild(tr);
-        }
-        seats.appendChild(table);
-      }
 });
