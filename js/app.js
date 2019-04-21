@@ -90,21 +90,24 @@ button.addEventListener("click", function() {
       let inputArrayRowsColumns = transformInputStringToArray(stringRowsColumns);
 
 // check input
-      if (queue<1) {
-        alert('Number of passengers waiting in a queue must be more than 0!');
-          return false;
-      }
       if (inputArrayRowsColumns.length>8) {
         alert('Too many sections with the rows and columns!');
-          return false;
+        document.getElementById("rowsColumns").focus();
+        return false;
       }
       for(i = 0; i < inputArrayRowsColumns.length; i++){
         for(j = 0; j < inputArrayRowsColumns[i].length; j++){
           if(inputArrayRowsColumns[i][j]<1 || Number.isNaN(inputArrayRowsColumns[i][j])) {
             alert('The rows and columns must be more than 0!');
-              return false;
+            document.getElementById("rowsColumns").focus();
+            return false;
           }
         }
+      }
+      if (queue<1 || !queue.match('^[0-9]+$')) {
+        alert('Incorrect input!');
+        document.getElementById("queue").focus();
+        return false;
       }
 
 // sorting seats
