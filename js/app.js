@@ -74,7 +74,7 @@ var controller = {
         }
       }
     }
-    if (que<1 || !que.match('^[0-9]+$')) {
+    if (que < 1 || que % 1 != 0) {
       alert('Incorrect input!');
       document.getElementById("queue").focus();
       return false;
