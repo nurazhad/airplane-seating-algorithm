@@ -1,5 +1,4 @@
-function Seat(block, row, column, classSeat, passenger)
-  {
+function Seat(block, row, column, classSeat, passenger) {
     this.block = block;
     this.row = row;
     this.column = column;
@@ -9,33 +8,31 @@ function Seat(block, row, column, classSeat, passenger)
 
 var controller = {
   init: function() {
-    let button = document.getElementById("button");
     let seats=document.getElementById("seats");
     let row, column, block, newSeat, i, j, z;
     let table, tr, td;
     let result = [];
-    button.addEventListener("click", function() {
+    document.getElementById("button").addEventListener("click", function() {
       let queue = document.getElementById('queue').value;
       let stringRowsColumns = document.getElementById("rowsColumns").value;
-      let inputArrayRowsColumns = controller.transformInputStringToArray(stringRowsColumns);
+      let inputArrayRowsColumns = controller.parseInput(stringRowsColumns);
       result = [];
 
       view.clearFromDOM(seats);   // removing old result
-      let check = controller.checkInput(inputArrayRowsColumns, queue);
-      if (check===false) {return false};
+      if (controller.isInputValid(inputArrayRowsColumns, queue)===false) {return false};
       view.addBackgroundImg();
-      controller.sortingSeats(inputArrayRowsColumns, result);
-      result.sort(controller.mySort('column'));
-      result.sort(controller.mySort('classSeat'));
-      controller.passengerSeating(result, queue);
-      result.sort(controller.mySort('row'));
-      result.sort(controller.mySort('column'));
-      result.sort(controller.mySort('block'));
+      controller.sortSeat(inputArrayRowsColumns, result);
+      result.sort(controller.comparator('column'));
+      result.sort(controller.comparator('classSeat'));
+
+      controller.seatPassengers(result, queue);
+      result.sort(controller.comparator('row', 'column', 'block'));
       view.createTableResults(inputArrayRowsColumns, result);
     });
   },
 
-  transformInputStringToArray: function(string) {
+//get a string from input in the format '[[x,y],[x,y]]' and return an array [[x,y],[x,y]]
+  parseInput: function(string) {
     string = string.replace(/\s/g, ''); //remove extra spaces
     string = string.substring(2, string.length-2); //remove first and last 2 symbol
 
@@ -51,15 +48,13 @@ var controller = {
     return array;
   },
 
-  mySort: function (key) {
+  comparator: function (key) {
     return function(a, b) {
-      const varA = a[key];
-      const varB = b[key];
-      return ((varA < varB) ? -1 : ((varA > varB) ? 1 : 0));
+      return a[key] - b[key];
     }
   },
 
-  checkInput: function(arrayRowsColumns, que) {
+  isInputValid: function(arrayRowsColumns, que) {
     if (arrayRowsColumns.length>8) {
       alert('Too many sections with the rows and columns!');
       document.getElementById("rowsColumns").focus();
@@ -81,25 +76,22 @@ var controller = {
     }
   },
 
-  sortingSeats: function(inputArray, resultArr) {
+  sortSeat: function(inputArray, resultArr) {
     for(block = 1; block <= inputArray.length; block++){
       for(column = 1; column <= inputArray[block-1][0]; column++){
         for(row = 1; row <= inputArray[block-1][1]; row++){
           if(block === 1 && column === 1 && inputArray[block-1][0]>1) {
             newSeat = new Seat(block, column, row, 2);
             resultArr.push(newSeat);
-          }
-          else if(block === inputArray.length
+          } else if(block === inputArray.length
             && column === inputArray[block-1][0]
             && inputArray[block-1][0]>1){
             newSeat = new Seat(block, column, row, 2);
             resultArr.push(newSeat);
-          }
-          else if(column === 1 || column === (inputArray[block-1][0])) {
+          } else if(column === 1 || column === (inputArray[block-1][0])) {
             newSeat = new Seat(block, column, row, 1);
             resultArr.push(newSeat);
-          }
-          else {
+          } else {
             newSeat = new Seat(block, column, row, 3);
             resultArr.push(newSeat);
           }
@@ -108,14 +100,13 @@ var controller = {
     }
   },
 
-  passengerSeating: function(res, que) {
+  seatPassengers: function(res, que) {
     if(res.length<que) {
       alert("Only the first "+res.length+" passengers will be able to fly away.");
       for(i=0; i<res.length; i++){
         res[i].passenger = i+1;
       }
-    }
-    else {
+    } else {
       for(i=0; i<que; i++){
         res[i].passenger = i+1;
       }
@@ -149,8 +140,7 @@ var view = {
             td.setAttribute('class', 'class'+arrResult[z].classSeat);
             if(isNaN(arrResult[z].passenger)===false) {
               td.innerText=arrResult[z].passenger;
-            }
-            else{
+            } else{
               td.innerText="";
             }
             tr.appendChild(td);
