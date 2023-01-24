@@ -1,4 +1,4 @@
-# airplane-seatng-algorithm
+# airplane-seating-algorithm
 
 app that helps seat audiences in a flight based on the following input and rules.
 
