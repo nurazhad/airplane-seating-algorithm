@@ -122,7 +122,7 @@ var view = {
   },
 
   addBackgroundImg: function() {
-      seats.style.background = 'url(\'img/img.png\') no-repeat center top';
+      // seats.style.background = 'url(\'img/img.png\') no-repeat center top'; 
       seats.style.backgroundSize = 'contain';
   },
 
